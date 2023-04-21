@@ -37,21 +37,31 @@ func main() {
 		}
 
 		newModTime := fileStat.ModTime()
+		var cmd *exec.Cmd
 
 		if newModTime != modTime {
+			fmt.Println("fwatch: File changed, running command...")
 			modTime = newModTime
-			cmd := exec.Command(os.Args[2], os.Args[3:]...)
-			stdout, err := cmd.Output()
+
+			if cmd != nil {
+				cmd.Process.Kill()
+				fmt.Println("fwatch: Killed previous command due to file change.")
+			}
+
+			cmd = exec.Command(os.Args[2], os.Args[3:]...)
+
+			cmd.Stdout = os.Stdout
+			cmd.Stderr = os.Stderr
+			err := cmd.Start()
 
 			if err != nil {
 				errMessage := err.Error()
 				// replace the "exec: " with nothing
 				errMessage = errMessage[6:]
-				fmt.Println("Error: " + errMessage)
+				fmt.Println("fwatch: Error: " + errMessage)
 				os.Exit(1)
 			}
 
-			fmt.Println(string(stdout))
 		}
 
 		time.Sleep(500 * time.Millisecond)
