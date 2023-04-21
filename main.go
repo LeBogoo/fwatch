@@ -8,8 +8,19 @@ import (
 )
 
 func main() {
+	if len(os.Args) < 3 {
+		fmt.Println("Usage: fwatch <file> <command> <args>")
+		return
+	}
+
 	filepath := os.Args[1]
-	fileStat, _ := os.Stat(filepath)
+
+	fileStat, err := os.Stat(filepath)
+
+	if err != nil {
+		fmt.Println("Error: File \"" + filepath + "\" not found.")
+		os.Exit(1)
+	}
 
 	modTime := fileStat.ModTime()
 
@@ -24,8 +35,11 @@ func main() {
 			stdout, err := cmd.Output()
 
 			if err != nil {
-				fmt.Println(err.Error())
-				return
+				errMessage := err.Error()
+				// replace the "exec: " with nothing
+				errMessage = errMessage[6:]
+				fmt.Println("Error: " + errMessage)
+				os.Exit(1)
 			}
 
 			fmt.Println(string(stdout))
