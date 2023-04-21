@@ -8,7 +8,8 @@ import (
 )
 
 func notfound() {
-	fmt.Println("fwatch: Error: File \"" + os.Args[1] + "\" not found.")	os.Exit(1)
+	fmt.Println("fwatch: Error: File \"" + os.Args[1] + "\" not found.")
+	os.Exit(1)
 }
 
 func main() {
