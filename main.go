@@ -28,7 +28,7 @@ func main() {
 				return
 			}
 
-			fmt.Print(string(stdout))
+			fmt.Println(string(stdout))
 		}
 
 		time.Sleep(500 * time.Millisecond)
