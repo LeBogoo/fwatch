@@ -7,6 +7,11 @@ import (
 	"time"
 )
 
+func notfound() {
+	fmt.Println("Error: File \"" + os.Args[1] + "\" not found.")
+	os.Exit(1)
+}
+
 func main() {
 	if len(os.Args) < 3 {
 		fmt.Println("Usage: fwatch <file> <command> <args>")
@@ -18,15 +23,19 @@ func main() {
 	fileStat, err := os.Stat(filepath)
 
 	if err != nil {
-		fmt.Println("Error: File \"" + filepath + "\" not found.")
-		os.Exit(1)
+		notfound()
 	}
 
 	modTime := fileStat.ModTime()
 
 	for {
 
-		fileStat, _ := os.Stat(filepath)
+		fileStat, err := os.Stat(filepath)
+
+		if err != nil {
+			notfound()
+		}
+
 		newModTime := fileStat.ModTime()
 
 		if newModTime != modTime {
